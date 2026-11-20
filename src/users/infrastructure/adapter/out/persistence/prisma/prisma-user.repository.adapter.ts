@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepositoryPort } from '../../../../../application/port/out/user-repository.port.js';
 import { User } from '../../../../../domain/model/user.js';
-import { PrismaService } from '../../../../../../shared/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../../../../../shared/infrastructure/config/prisma/prisma.service.js';
 import { UserPersistenceMapper } from './user-persistence.mapper.js';
 
 @Injectable()

@@ -33,7 +33,7 @@ Each feature lives in `src/<feature>/` following `src/users/`:
 - `infrastructure/adapter/in/rest/` — controller, DTOs + mapper, exception filter. `infrastructure/adapter/out/persistence/prisma/` — Prisma adapter, persistence entity and mapper.
 - `<feature>.module.ts` is the composition root: binds each port to its implementation (`{ provide: CreateUserUseCase, useExisting: UserService }`, `{ provide: UserRepositoryPort, useClass: PrismaUserRepositoryAdapter }`).
 
-Dependency rule: `infrastructure` → `application` → `domain`, never the reverse. Ports are **abstract classes, not interfaces**, so they serve as Nest DI tokens. Shared technical code (e.g. `PrismaService`/`PrismaModule`) lives in `src/shared/infrastructure/`.
+Dependency rule: `infrastructure` → `application` → `domain`, never the reverse. Ports are **abstract classes, not interfaces**, so they serve as Nest DI tokens. Shared technical code (e.g. `PrismaService`/`PrismaModule`) lives in `src/shared/infrastructure/` (Prisma setup in `config/prisma/`).
 
 Domain exceptions (e.g. `UserNotFoundException`) are mapped to HTTP statuses in the feature's `global-exception.handler.ts` filter — add new exceptions to both its `@Catch` list and status mapping.
 
