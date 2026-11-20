@@ -1,5 +1,6 @@
-import { User } from '../../../domain/model/user.js';
+import { ListUsersQuery } from '../../query/list-users.query.js';
+import { UserReadModel } from '../../query/user.read-model.js';
 
 export abstract class ListUsersUseCase {
-  abstract list(): Promise<User[]>;
+  abstract list(query: ListUsersQuery): Promise<UserReadModel[]>;
 }

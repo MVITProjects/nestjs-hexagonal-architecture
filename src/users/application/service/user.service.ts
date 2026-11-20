@@ -2,18 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { EmailAlreadyInUseException } from '../../domain/exception/email-already-in-use.exception.js';
 import { UserNotFoundException } from '../../domain/exception/user-not-found.exception.js';
 import { User } from '../../domain/model/user.js';
-import {
-  CreateUserCommand,
-  CreateUserUseCase,
-} from '../port/in/create-user.use-case.js';
+import { CreateUserCommand } from '../command/create-user.command.js';
+import { DeleteUserCommand } from '../command/delete-user.command.js';
+import { UpdateUserCommand } from '../command/update-user.command.js';
+import { CreateUserUseCase } from '../port/in/create-user.use-case.js';
 import { DeleteUserUseCase } from '../port/in/delete-user.use-case.js';
 import { GetUserUseCase } from '../port/in/get-user.use-case.js';
 import { ListUsersUseCase } from '../port/in/list-users.use-case.js';
-import {
-  UpdateUserCommand,
-  UpdateUserUseCase,
-} from '../port/in/update-user.use-case.js';
+import { UpdateUserUseCase } from '../port/in/update-user.use-case.js';
 import { UserRepositoryPort } from '../port/out/user-repository.port.js';
+import { GetUserQuery } from '../query/get-user.query.js';
+import { ListUsersQuery } from '../query/list-users.query.js';
+import { UserReadModel } from '../query/user.read-model.js';
 
 @Injectable()
 export class UserService
@@ -34,18 +34,16 @@ export class UserService
     return this.users.save(user);
   }
 
-  list(): Promise<User[]> {
-    return this.users.findAll();
+  async list(_query: ListUsersQuery): Promise<UserReadModel[]> {
+    return (await this.users.findAll()).map((u) => UserReadModel.fromDomain(u));
   }
 
-  async getById(id: number): Promise<User> {
-    const user = await this.users.findById(id);
-    if (!user) throw new UserNotFoundException(id);
-    return user;
+  async getById(query: GetUserQuery): Promise<UserReadModel> {
+    return UserReadModel.fromDomain(await this.findOrFail(query.id));
   }
 
-  async update(id: number, command: UpdateUserCommand): Promise<User> {
-    const user = await this.getById(id);
+  async update(command: UpdateUserCommand): Promise<User> {
+    const user = await this.findOrFail(command.id);
 
     if (command.email !== undefined) {
       user.changeEmail(command.email);
@@ -59,8 +57,14 @@ export class UserService
     return this.users.save(user);
   }
 
-  async delete(id: number): Promise<void> {
-    await this.getById(id);
-    await this.users.delete(id);
+  async delete(command: DeleteUserCommand): Promise<void> {
+    await this.findOrFail(command.id);
+    await this.users.delete(command.id);
+  }
+
+  private async findOrFail(id: number): Promise<User> {
+    const user = await this.users.findById(id);
+    if (!user) throw new UserNotFoundException(id);
+    return user;
   }
 }

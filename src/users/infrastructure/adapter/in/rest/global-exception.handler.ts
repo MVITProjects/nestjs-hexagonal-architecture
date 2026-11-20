@@ -10,9 +10,7 @@ import { InvalidEmailException } from '../../../../domain/exception/invalid-emai
 import { UserNotFoundException } from '../../../../domain/exception/user-not-found.exception.js';
 
 type DomainException =
-  | UserNotFoundException
-  | EmailAlreadyInUseException
-  | InvalidEmailException;
+  UserNotFoundException | EmailAlreadyInUseException | InvalidEmailException;
 
 @Catch(UserNotFoundException, EmailAlreadyInUseException, InvalidEmailException)
 export class GlobalExceptionHandler implements ExceptionFilter<DomainException> {

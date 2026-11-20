@@ -1,10 +1,6 @@
 import { User } from '../../../domain/model/user.js';
-
-export interface UpdateUserCommand {
-  email?: string;
-  name?: string;
-}
+import { UpdateUserCommand } from '../../command/update-user.command.js';
 
 export abstract class UpdateUserUseCase {
-  abstract update(id: number, command: UpdateUserCommand): Promise<User>;
+  abstract update(command: UpdateUserCommand): Promise<User>;
 }

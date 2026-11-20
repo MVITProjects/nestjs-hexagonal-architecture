@@ -1,5 +1,6 @@
-import { User } from '../../../domain/model/user.js';
+import { GetUserQuery } from '../../query/get-user.query.js';
+import { UserReadModel } from '../../query/user.read-model.js';
 
 export abstract class GetUserUseCase {
-  abstract getById(id: number): Promise<User>;
+  abstract getById(query: GetUserQuery): Promise<UserReadModel>;
 }
